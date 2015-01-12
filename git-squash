@@ -1,0 +1,24 @@
+#!/bin/bash
+if [[ $# == 1 ]]; then
+  let count=$1
+  let dest=$1+1
+  declare victims=$(git log -$count --format=%s)
+  declare target=$(git log -1 --skip $count --format=%s)
+  declare message=$(git log -1 --format=%B HEAD~$count)
+  echo Squashing these $count commits:
+  echo "$victims"
+  echo
+  echo Into this one:
+  echo "$target"
+  echo
+  read -p "OK to Proceed? " -n 1 -r
+  echo   
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    git reset --soft HEAD~$dest && git commit -m "$message"
+  else
+    echo "Squash Aborted."
+  fi
+else
+  echo "specify number of commits to squash into 1"
+fi
