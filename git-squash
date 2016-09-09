@@ -5,14 +5,14 @@ if [[ $# == 1 ]]; then
   declare victims=$(git log -$count --format=%s)
   declare target=$(git log -1 --skip $count --format=%s)
   declare message=$(git log -1 --format=%B HEAD~$count)
-  echo Squashing these $count commits:
-  echo "$victims"
+  echo Squashing $count commit\(s\):
+  echo "$(echo "$victims" | while read msg; do printf -- "- %s\n" "$msg"; done)"
   echo
   echo Into this one:
-  echo "$target"
+  echo "- $target"
   echo
   read -p "OK to Proceed? " -n 1 -r
-  echo   
+  echo
   if [[ $REPLY =~ ^[Yy]$ ]]
   then
     git reset --soft HEAD~$dest && git commit -m "$message"
